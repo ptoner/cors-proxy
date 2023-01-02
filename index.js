@@ -1,18 +1,24 @@
-'use strict'
-const url = require('url')
-const pkg = require('./package.json')
-const {send} = require('micro')
-const origin = process.env.ALLOW_ORIGIN
-const insecure_origins = (process.env.INSECURE_HTTP_ORIGINS || '').split(',')
-const middleware = require('./middleware.js')({ origin, insecure_origins })
+'use strict';
 
-async function service (req, res) {
+import url from 'url';
+
+import pkg from './package.json' assert { type: "json" }
+import { send } from 'micro';
+
+const origin = process.env.ALLOW_ORIGIN;
+const insecureOrigins = (process.env.INSECURE_HTTP_ORIGINS || '').split(',')
+
+import middlewarejs from './middleware.js'
+
+const middleware = middlewarejs({ origin, insecureOrigins })
+
+async function service(req, res) {
   middleware(req, res, () => {
-    let u = url.parse(req.url, true)
+    const u = url.parse(req.url, true);
 
     if (u.pathname === '/') {
-      res.setHeader('content-type', 'text/html')
-      let html = `<!DOCTYPE html>
+      res.setHeader('content-type', 'text/html');
+      const html = `<!DOCTYPE html>
       <html>
         <title>@isomorphic-git/cors-proxy</title>
         <h1>@isomorphic-git/cors-proxy</h1>
@@ -33,13 +39,13 @@ async function service (req, res) {
         <h2>Allowed Origins</h2>
         This proxy allows git clone / fetch / push / getRemoteInfo requests from these domains: <code>${process.env.ALLOW_ORIGIN || '*'}</code>
       </html>
-      `
-      return send(res, 400, html)
+      `;
+      return send(res, 400, html);
     }
 
     // Don't waste my precious bandwidth
-    return send(res, 403, '')
-  })
+    return send(res, 403, '');
+  });
 }
 
-module.exports = service
+export default service

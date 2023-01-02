@@ -1,9 +1,12 @@
 #!/usr/bin/env node
-const fs = require('fs')
-const path = require('path')
-const {spawn} = require('child_process')
-const kill = require('tree-kill')
-const minimisted = require('minimisted')
+import fs from 'fs';
+import path from 'path';
+import { spawn } from 'child_process';
+import kill from 'tree-kill';
+import minimisted from 'minimisted';
+
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
 
 async function main({_: [cmd], p, d}) {
   switch (cmd) {

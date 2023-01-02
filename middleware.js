@@ -1,8 +1,11 @@
-'use strict'
-const url = require('url')
-const {send} = require('micro')
-const microCors = require('micro-cors')
-const fetch = require('node-fetch')
+'use strict';
+
+import url from 'url';
+import { send } from 'micro';
+import microCors from 'micro-cors';
+import fetch from 'node-fetch';
+
+import allow from './allow-request.js';
 
 const allowHeaders = [
   'accept-encoding',
@@ -49,7 +52,6 @@ const allowMethods = [
   'OPTIONS'
 ]
 
-const allow = require('./allow-request.js')
 
 const filter = (predicate, middleware) => {
   function corsProxyMiddleware (req, res, next) {
@@ -86,7 +88,7 @@ function noop (_req, _res, next) {
   next()
 }
 
-module.exports = ({ origin, insecure_origins = [], authorization = noop } = {}) => {
+export default ({ origin, insecure_origins = [], authorization = noop } = {}) => {
   function predicate (req) {
     let u = url.parse(req.url, true)
     // Not a git request, skip
